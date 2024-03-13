@@ -18,6 +18,8 @@ jobs:
     - name: Publish Application
       run: dotnet publish WeMeetRecorder/WeMeetRecorder.csproj -c Release -o publish -r win-x64 --self-contained false
     - name: Create Velopack Release
+      env:
+        BUILD_NUMBER: ${{github.run_number}}
       shell: pwsh
       run: |
         $Version = Get-Date -Format "yyyy.M.$env:BUILD_NUMBER"
