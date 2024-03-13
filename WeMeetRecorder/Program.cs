@@ -1,9 +1,11 @@
 using Coravel;
 using System.Text.Json.Serialization;
+using Velopack;
 
 namespace WeMeetRecorder {
     public class Program {
         public static void Main(string[] args) {
+            VelopackApp.Build().Run();
             var builder = WebApplication.CreateSlimBuilder(args);
             builder.Services.AddScheduler();
             builder.Services.ConfigureHttpJsonOptions(options => {

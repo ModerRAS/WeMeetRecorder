@@ -20,7 +20,7 @@ jobs:
     - name: Create Velopack Release
       shell: pwsh
       run: |
-        $Version = Get-Date -Format "yyyy.MM.dd.$env:BUILD_NUMBER"
+        $Version = Get-Date -Format "yyyy.M.$env:BUILD_NUMBER"
         dotnet tool install -g vpk
         vpk download github --repoUrl https://github.com/ModerRAS/WeMeetRecorder
         vpk pack -u WeMeetRecorder -v $Version -p publish
