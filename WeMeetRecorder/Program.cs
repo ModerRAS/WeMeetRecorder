@@ -20,10 +20,10 @@ namespace WeMeetRecorder {
             // install new version and restart app
             mgr.ApplyUpdatesAndRestart(newVersion);
         }
-        public static async Task Main(string[] args) {
+        public static void Main(string[] args) {
             var Log = new MemoryLogger();
             VelopackApp.Build().Run(Log);
-            await UpdateMyApp();
+            UpdateMyApp().Wait();
             var builder = WebApplication.CreateSlimBuilder(args);
             builder.Services.AddScheduler();
             builder.Services.ConfigureHttpJsonOptions(options => {
