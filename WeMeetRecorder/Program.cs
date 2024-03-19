@@ -7,23 +7,7 @@ using WeMeetRecorder.Utils;
 
 namespace WeMeetRecorder {
     public class Program {
-        static async Task<string> GetRedirectedUrl(string url) {
-            using HttpClient client = new HttpClient(new HttpClientHandler() { AllowAutoRedirect = false});
-            HttpResponseMessage response = await client.GetAsync(url);
-            if (response.StatusCode == System.Net.HttpStatusCode.Found)
-            {
-                return response.Headers.Location.ToString();
-            }
-            return url;
-        }
-        static string GetLatestVersion(string url) {
-            string[] segments = url.Split('/');
-            string version = segments[segments.Length - 1];
-            return version;
-        }
         private static async Task UpdateMyApp() {
-            //var version = GetLatestVersion(await GetRedirectedUrl("https://github.com/ModerRAS/WeMeetRecorder/releases/latest"));
-            //var mgr = new UpdateManager($"https://github.com/ModerRAS/WeMeetRecorder/releases/download/{version}/");
             var mgr = new UpdateManager(new GithubSource("https://github.com/ModerRAS/WeMeetRecorder", null, false));
 
             // check for new version
