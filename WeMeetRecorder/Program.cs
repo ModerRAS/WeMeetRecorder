@@ -25,7 +25,7 @@ namespace WeMeetRecorder {
         private static async Task UpdateMyApp() {
             //var version = GetLatestVersion(await GetRedirectedUrl("https://github.com/ModerRAS/WeMeetRecorder/releases/latest"));
             //var mgr = new UpdateManager($"https://github.com/ModerRAS/WeMeetRecorder/releases/download/{version}/");
-            var mgr = new UpdateManager(new GithubSource("https://github.com/ModerRAS/WeMeetRecorder/", null, false));
+            var mgr = new UpdateManager(new GithubSource("https://github.com/ModerRAS/WeMeetRecorder", null, false));
 
             // check for new version
             var newVersion = await mgr.CheckForUpdatesAsync();
