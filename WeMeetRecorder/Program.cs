@@ -15,9 +15,7 @@ namespace WeMeetRecorder {
             var app = builder.Build();
 
             app.Services.UseScheduler(scheduler => {
-                scheduler.ScheduleAsync(async () => {
-                    Console.WriteLine("test");
-                }).EveryFifteenSeconds();
+                scheduler.Schedule<WeMeetTask>().EveryFifteenSeconds();
             });
 
             var sampleTodos = new Todo[] {
