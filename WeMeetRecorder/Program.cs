@@ -7,7 +7,7 @@ using WeMeetRecorder.Utils;
 namespace WeMeetRecorder {
     public class Program {
         private static async Task UpdateMyApp() {
-            var mgr = new UpdateManager(new GithubSource("https://github.com/ModerRAS/WeMeetRecorder", null, false));
+            var mgr = new UpdateManager("https://github.com/ModerRAS/WeMeetRecorder/releases/download/latest/");
 
             // check for new version
             var newVersion = await mgr.CheckForUpdatesAsync();
