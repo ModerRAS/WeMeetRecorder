@@ -23,14 +23,16 @@ namespace WeMeetRecorder {
             return version;
         }
         private static async Task UpdateMyApp() {
-            var version = GetLatestVersion(await GetRedirectedUrl("https://github.com/ModerRAS/WeMeetRecorder/releases/latest"));
-            var mgr = new UpdateManager($"https://github.com/ModerRAS/WeMeetRecorder/releases/download/{version}/");
+            //var version = GetLatestVersion(await GetRedirectedUrl("https://github.com/ModerRAS/WeMeetRecorder/releases/latest"));
+            //var mgr = new UpdateManager($"https://github.com/ModerRAS/WeMeetRecorder/releases/download/{version}/");
+            var mgr = new UpdateManager(new GithubSource("https://github.com/ModerRAS/WeMeetRecorder/", null, false));
 
             // check for new version
             var newVersion = await mgr.CheckForUpdatesAsync();
             if (newVersion == null)
                 return; // no update available
 
+            
             // download new version
             await mgr.DownloadUpdatesAsync(newVersion);
 
@@ -40,13 +42,6 @@ namespace WeMeetRecorder {
         public static void Main(string[] args) {
             var Log = new MemoryLogger();
             VelopackApp.Build().Run(Log);
-            Task.Run(() => {
-                try {
-                    UpdateMyApp().Wait();
-                } catch (Exception ex) {
-                    Console.WriteLine(ex.ToString());
-                }
-            });
             var builder = WebApplication.CreateSlimBuilder(args);
             builder.Services.AddScheduler();
             builder.Services.ConfigureHttpJsonOptions(options => {
@@ -56,6 +51,13 @@ namespace WeMeetRecorder {
             var app = builder.Build();
 
             app.Services.UseScheduler(scheduler => {
+                scheduler.ScheduleAsync(async () => {
+                    try {
+                        await UpdateMyApp();
+                    } catch (Exception ex) {
+                        Console.WriteLine(ex.ToString());
+                    }
+                }).DailyAt(4, 0).RunOnceAtStart();
                 scheduler.ScheduleAsync(async () => {
                     if (!Env.IsStart) {
                         return;
