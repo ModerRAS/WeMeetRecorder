@@ -57,7 +57,6 @@ namespace WeMeetRecorder {
 
             app.Services.UseScheduler(scheduler => {
                 scheduler.ScheduleAsync(async () => {
-                    Console.Write("Running");
                     if (!Env.IsStart) {
                         return;
                     }
