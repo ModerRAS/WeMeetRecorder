@@ -23,7 +23,13 @@ namespace WeMeetRecorder {
         public static void Main(string[] args) {
             var Log = new MemoryLogger();
             VelopackApp.Build().Run(Log);
-            UpdateMyApp().Wait();
+            Task.Run(() => {
+                try {
+                    UpdateMyApp().Wait();
+                } catch (Exception ex) {
+                    Console.WriteLine(ex.ToString());
+                }
+            });
             var builder = WebApplication.CreateSlimBuilder(args);
             builder.Services.AddScheduler();
             builder.Services.ConfigureHttpJsonOptions(options => {
