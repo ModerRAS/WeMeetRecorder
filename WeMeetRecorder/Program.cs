@@ -1,11 +1,28 @@
 using Coravel;
 using System.Text.Json.Serialization;
 using Velopack;
+using Velopack.Sources;
+using WeMeetRecorder.Utils;
 
 namespace WeMeetRecorder {
     public class Program {
+        private static async Task UpdateMyApp() {
+            var mgr = new UpdateManager(new GithubSource("https://github.com/ModerRAS/WeMeetRecorder", null, false));
+
+            // check for new version
+            var newVersion = await mgr.CheckForUpdatesAsync();
+            if (newVersion == null)
+                return; // no update available
+
+            // download new version
+            await mgr.DownloadUpdatesAsync(newVersion);
+
+            // install new version and restart app
+            mgr.ApplyUpdatesAndRestart(newVersion);
+        }
         public static void Main(string[] args) {
-            VelopackApp.Build().Run();
+            var Log = new MemoryLogger();
+            VelopackApp.Build().Run(Log);
             var builder = WebApplication.CreateSlimBuilder(args);
             builder.Services.AddScheduler();
             builder.Services.ConfigureHttpJsonOptions(options => {
