@@ -35,20 +35,18 @@ namespace WeMeetRecorder {
                 scheduler.Schedule<WeMeetTask>().EveryFifteenSeconds();
             });
 
-            var sampleTodos = new Todo[] {
-                new(1, "Walk the dog"),
-                new(2, "Do the dishes", DateOnly.FromDateTime(DateTime.Now)),
-                new(3, "Do the laundry", DateOnly.FromDateTime(DateTime.Now.AddDays(1))),
-                new(4, "Clean the bathroom"),
-                new(5, "Clean the car", DateOnly.FromDateTime(DateTime.Now.AddDays(2)))
-            };
-
-            var todosApi = app.MapGroup("/todos");
-            todosApi.MapGet("/", () => sampleTodos);
-            todosApi.MapGet("/{id}", (int id) =>
-                sampleTodos.FirstOrDefault(a => a.Id == id) is { } todo
-                    ? Results.Ok(todo)
-                    : Results.NotFound());
+            var WeMeetApi = app.MapGroup("/");
+            WeMeetApi.MapGet("/{id}/{password}/{obspath}", (int id, string password, string obspath) => {
+                Env.MeetingId = id;
+                Env.MeetingPassword = password;
+                Env.ObsPath = obspath;
+                return Results.Ok();
+            });
+            WeMeetApi.MapGet("/{id}/{obspath}", (int id, string obspath) => {
+                Env.MeetingId = id;
+                Env.ObsPath = obspath;
+                return Results.Ok();
+            });
             app.Run();
         }
     }
