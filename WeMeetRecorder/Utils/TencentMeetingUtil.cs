@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FuckMeetingPlus.Utils {
+namespace WeMeetRecorder.Utils {
     public class TencentMeetingUtil {
         public static string GetTencentMeetingUrl(string meetingId) {
             return $"start wemeet://page/inmeeting?meeting_code={meetingId}";
@@ -28,14 +28,23 @@ namespace FuckMeetingPlus.Utils {
             IntPtr hwnd = NativeMethod.FindWindow(null, "腾讯会议"); // 通过窗口标题查找窗口句柄
             NativeMethod.GetWindowRect(hwnd, out var rect);
             //NativeMethod.SetForegroundWindow(hwnd); // 将窗口提到前台
-            NativeMethod.LeftMouseClick(rect.Right - 100, rect.Top + 300);
+            ClickText("进入会议");
+            //NativeMethod.LeftMouseClick(rect.Right - 100, rect.Top + 300);
+        }
+        public static void ClickText(string text) {
+            for (int i = 0; i < 3; i++) {
+                try {
+                    var point = Detector.GetTextFromScreen(text);
+
+                    NativeMethod.LeftMouseClick(point);
+                    break;
+                } catch (Detector.NotFoundException) {
+                    Task.Delay(1000).Wait();
+                }
+            }
         }
         public static void IKnowRecording() {
-            var point = Detector.MatchTemplateOnScreen("Assets/IKnow.png");
-            if (point == null) {
-                return;
-            }
-            NativeMethod.LeftMouseClick(point);
+            ClickText("知道了");
         }
         public static void FullScreen() {
             var point = Detector.MatchTemplateOnScreen("Assets/FullScreen.png");

@@ -3,7 +3,7 @@ using System;
 using WindowsInput;
 using System.Runtime.InteropServices;
 
-namespace FuckMeetingPlus.Utils;
+namespace WeMeetRecorder.Utils;
 
 public class NativeMethod
 {

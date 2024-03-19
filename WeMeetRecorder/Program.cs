@@ -1,5 +1,4 @@
 using Coravel;
-using FuckMeetingPlus.Utils;
 using Newtonsoft.Json;
 using System.Text.Json.Serialization;
 using Velopack;
@@ -62,35 +61,36 @@ namespace WeMeetRecorder {
                     if (!Env.IsStart) {
                         return;
                     }
+                    Env.IsStart = false;
                     DateTime now = DateTime.Now;
                     if (now < Env.Time) {
                         return;
                     }
-                    if (Env.MeetingId < 0) {
+                    if (string.IsNullOrWhiteSpace(Env.MeetingId)) {
                         return;
                     }
                     if (string.IsNullOrWhiteSpace(Env.MeetingPassword)) {
-                        TencentMeetingUtil.JoinMeeting($"{Env.MeetingId}");
+                        TencentMeetingUtil.JoinMeeting(Env.MeetingId);
                     } else {
-                        TencentMeetingUtil.JoinMeeting($"{Env.MeetingId}", Env.MeetingPassword);
+                        TencentMeetingUtil.JoinMeeting(Env.MeetingId, Env.MeetingPassword);
                     }
                     await Task.Delay(5000);
                     if (!string.IsNullOrWhiteSpace(Env.ObsPath)) {
-                        Cmd.RunCommand($"start /d \"{Path.GetDirectoryName(Env.ObsPath)}\" \"\" {Path.GetFileName(Env.ObsPath)} --startrecording");
+                        //var command = $"cd \"{Path.GetDirectoryName(Env.ObsPath)}\" ;.\"{Path.GetFileName(Env.ObsPath)} --startrecording";
+                        Cmd.ExecuteProgram(Env.ObsPath, "--startrecording");
                     }
-                    Env.IsStart = false;
                     return;
                 }).EveryTenSeconds();
             });
 
             var WeMeetApi = app.MapGroup("/");
-            WeMeetApi.MapGet("/{id}/{password}/{obspath}", (int id, string password, string obspath) => {
+            WeMeetApi.MapGet("/{id}/{password}/{obspath}", (string id, string password, string obspath) => {
                 Env.MeetingId = id;
                 Env.MeetingPassword = password;
                 Env.ObsPath = obspath;
                 return Results.Ok();
             });
-            WeMeetApi.MapGet("/{id}/{obspath}", (int id, string obspath) => {
+            WeMeetApi.MapGet("/{id}/{obspath}", (string id, string obspath) => {
                 Env.MeetingId = id;
                 Env.ObsPath = obspath;
                 return Results.Ok();
@@ -122,7 +122,7 @@ namespace WeMeetRecorder {
     public class SessionData {
         public string Token { get; set; }
         public string Time { get; set; }
-        public int MeetingId { get; set; }
+        public string MeetingId { get; set; }
         public string MeetingPassword { get; set; }
         public string ObsPath { get; set; }
     }

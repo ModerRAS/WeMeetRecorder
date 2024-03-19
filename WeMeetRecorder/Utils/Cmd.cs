@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace FuckMeetingPlus.Utils;
+namespace WeMeetRecorder.Utils;
 
 public class Cmd
 {
@@ -38,5 +38,16 @@ public class Cmd
 
             return output;
         }
+    }
+
+    public static int ExecuteProgram(string programPath, string arguments) {
+        var processStartInfo = new ProcessStartInfo {
+            FileName = programPath,
+            Arguments = arguments,
+            WorkingDirectory = Path.GetDirectoryName(programPath)
+        };
+
+        Process process = Process.Start(processStartInfo);
+        return process.Id;
     }
 }

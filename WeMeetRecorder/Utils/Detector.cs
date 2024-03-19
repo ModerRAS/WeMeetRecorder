@@ -7,8 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenCvSharp;
 using Point = System.Drawing.Point;
-namespace FuckMeetingPlus.Utils {
+using System.Runtime.Serialization;
+namespace WeMeetRecorder.Utils {
     public class Detector {
+        public static PaddleOCR PaddleOCR = new PaddleOCR();
         static Mat BitmapToMat(Bitmap bitmap) {
             BitmapData bmpData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
             Mat mat = new Mat(bitmap.Height, bitmap.Width, MatType.CV_8UC4, bmpData.Scan0);
@@ -46,6 +48,32 @@ namespace FuckMeetingPlus.Utils {
 
 
             return new Point() { X = (int)((maxLoc.X + templateImage.Cols / 2.0) / dpi), Y = (int)((maxLoc.Y + templateImage.Rows / 2.0) / dpi) };
+        }
+
+        public static Point GetTextFromScreen(string text) {
+            var cap = NativeMethod.GetScreenCapture();
+            var result = PaddleOCR.GetOcrResult(cap);
+            foreach (var e in result.Regions) {
+                if (e.Text.Equals(text)) {
+                    return new Point((int)e.Rect.Center.X, (int)e.Rect.Center.Y);
+                }
+            }
+            throw new NotFoundException("Not Found");
+        }
+
+        [Serializable]
+        public class NotFoundException : Exception {
+            public NotFoundException() {
+            }
+
+            public NotFoundException(string? message) : base(message) {
+            }
+
+            public NotFoundException(string? message, Exception? innerException) : base(message, innerException) {
+            }
+
+            protected NotFoundException(SerializationInfo info, StreamingContext context) : base(info, context) {
+            }
         }
     }
 }
