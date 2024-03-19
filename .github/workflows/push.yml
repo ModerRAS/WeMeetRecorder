@@ -27,5 +27,4 @@ jobs:
         dotnet tool install -g vpk
         vpk download github --repoUrl https://github.com/ModerRAS/WeMeetRecorder
         vpk pack -u WeMeetRecorder -v $Version -p publish
-        vpk upload github --repoUrl https://github.com/ModerRAS/WeMeetRecorder --publish --releaseName "WeMeetRecorder $Version" --tag v$Version --token ${{ secrets.GITHUB_TOKEN }}
         vpk upload github --repoUrl https://github.com/ModerRAS/WeMeetRecorder --publish --releaseName "WeMeetRecorder $Version" --tag latest --token ${{ secrets.GITHUB_TOKEN }}
